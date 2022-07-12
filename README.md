@@ -6,44 +6,48 @@ A place for my Node Module and Package Management scripts and notes (these notes
 
 Package.json files describe file trees as described by the Node docs. It's useful to think about each package.json file as its own seperate tree, suggesting the leaf node of a package is the last directory BEFORE entering a new directory with a pacakge.json or node_modules.
 
-### ECMA Script modules
+### In NodeJS there are two types of Module Specifier Resolution Algorithms:
+1. ECMA Script ESM_RESOLVE(specifier, parentURL)
+2. Require()
 
-- When you have these use cases under your node instance's initial directory you are using ECMA Script modules:
-  - Files with an .mjs extension.
+### Require Pseudocode
+require(X) from module at path Y
+1. If X is a core module,
+  -  return the core module
+  -  STOP
+2. If X begins with '/'
+   - set Y to be the filesystem root
+3. If X begins with './' or '/' or '../'
+   - LOAD_AS_FILE(Y + X)
+   - LOAD_AS_DIRECTORY(Y + X)
+   - THROW "not found"
+4. If X begins with '#'
+   - LOAD_PACKAGE_IMPORTS(X, dirname(Y))
+5. LOAD_PACKAGE_SELF(X, dirname(Y))
+6. LOAD_NODE_MODULES(X, dirname(Y))
+7. THROW "not found"
 
-  - Files with a .js extension when the nearest parent package.json file contains a top-level "type" field with a value of "module".
-
-  - Strings passed in as an argument to --eval, or piped to node via STDIN, with the flag --input-type=module
-
-
-### CommonJS modules is the default mode:
-
-- When you are not using any ECMA script features, the package is looked at from a Common JS perspective (using Common JS rules). This suggests that CommonJS is the default, and ECMA modules are an exception to the general rule. 
-
-- It is still preferable (best practice) that you be more explicit because ECMA Script seems to be taking over a bit more. To specify explicitly that you are using Common JS modules for a package tree, use the following:
-  - Files with a .cjs extension.
-  - Files with a .js extension when the nearest parent package.json file contains a top-level field "type" with a value of "commonjs".
-  - Strings passed in as an argument to --eval or --print, or piped to node via STDIN, with the flag --input-type=commonjs.
-
-From the documentation:
-- Package authors should include the "type" field, even in packages where all sources are CommonJS. Being explicit about the type of the package will future-proof the package in case the default type of Node.js ever changes, and it will also make things easier for build tools and loaders to determine how the files in the package should be interpreted.
-
-## Module Loaders:
-Just in time compilation does not seem to have a static executable file. It looks like it exists in RAM during runtime only and is cleaned up before returning from the program. This means the loader acts like a realtime linker that links modules as needed. With that being said, there are two loaders for the two different Module support types:
-
-### CommonJS Loaders
-Top level is from the docs. My annotations underneath are not required to be accurate here (for now):
-- It is fully synchronous.
-  - Modules and sub components are loaded syncronously as they are called upon. This means one can predict which modules will be loaded first.
-- It is responsible for handling require() calls.
-  - I'm not sure if this means we can have CommonJS loaders in the same package as ECMA Script Loaders. If CommonJS modules are "responsible for handling" require(), then does that mean that you can have require() and import syntax loaded independently in the same file?
-- It is monkey patchable.
-- It supports folders as modules.
-- When resolving a specifier, if no exact match is found, it will try to add extensions (.js, .json, and finally .node) and then attempt to resolve folders as modules.
-- It treats .json as JSON text files.
-- .node files are interpreted as compiled addon modules loaded with process.dlopen().
-- It treats all files that lack .json or .node extensions as JavaScript text files.
-- It cannot be used to load ECMAScript modules (although it is possible to load ECMASCript modules from CommonJS modules). When used to load a JavaScript text file that is not an ECMAScript module, it loads it as a CommonJS module.
-
-
-### ECMA Script Loaders
+### ECMA_RESOLVE Pseudocode
+1. Let resolved be undefined.
+2. If specifier is a valid URL, then
+  - Set resolved to the result of parsing and reserializing specifier as a URL.
+3. Otherwise, if specifier starts with "/", "./", or "../", then
+  - Set resolved to the URL resolution of specifier relative to parentURL.
+4. Otherwise, if specifier starts with "#", then
+  - Set resolved to the result of PACKAGE_IMPORTS_RESOLVE(specifier, parentURL, defaultConditions).
+5. Otherwise,
+  - Note: specifier is now a bare specifier.
+  - Set resolved the result of PACKAGE_RESOLVE(specifier, parentURL).
+6. Let format be undefined.
+7. If resolved is a "file:" URL, then
+  - If resolved contains any percent encodings of "/" or "\" ("%2F" and "%5C" respectively), then
+    - Throw an Invalid Module Specifier error.
+  - If the file at resolved is a directory, then
+    - Throw an Unsupported Directory Import error.
+  - If the file at resolved does not exist, then
+    - Throw a Module Not Found error.
+  - Set resolved to the real path of resolved, maintaining the same URL querystring and fragment components.
+  - Set format to the result of ESM_FILE_FORMAT(resolved).
+8. Otherwise,
+  - Set format the module format of the content type associated with the URL resolved.
+9. Load resolved as module format, format.
