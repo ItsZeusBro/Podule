@@ -28,26 +28,29 @@ require(X) from module at path Y
 7. THROW "not found"
 
 ### ECMA_RESOLVE Pseudocode
-1. Let resolved be undefined.
-2. If specifier is a valid URL, then
+LET resolved be undefined.
+
+IF specifier is a valid URL, then
   - Set resolved to the result of parsing and reserializing specifier as a URL.
-3. Otherwise, if specifier starts with "/", "./", or "../", then
+ELSE IF specifier starts with "/", "./", or "../", then
   - Set resolved to the URL resolution of specifier relative to parentURL.
-4. Otherwise, if specifier starts with "#", then
+ELSE IF specifier starts with "#", then
   - Set resolved to the result of PACKAGE_IMPORTS_RESOLVE(specifier, parentURL, defaultConditions).
-5. Otherwise,
+ELSE,
   - Note: specifier is now a bare specifier.
   - Set resolved the result of PACKAGE_RESOLVE(specifier, parentURL).
-6. Let format be undefined.
-7. If resolved is a "file:" URL, then
-  - If resolved contains any percent encodings of "/" or "\" ("%2F" and "%5C" respectively), then
+  
+LET format be undefined.
+
+IF resolved is a "file:" URL, then
+  - IF resolved contains any percent encodings of "/" or "\" ("%2F" and "%5C" respectively), then
     - Throw an Invalid Module Specifier error.
-  - If the file at resolved is a directory, then
+  - IF the file at resolved is a directory, then
     - Throw an Unsupported Directory Import error.
-  - If the file at resolved does not exist, then
+  - IF the file at resolved does not exist, then
     - Throw a Module Not Found error.
-  - Set resolved to the real path of resolved, maintaining the same URL querystring and fragment components.
-  - Set format to the result of ESM_FILE_FORMAT(resolved).
-8. Otherwise,
+  - SET resolved to the real path of resolved, maintaining the same URL querystring and fragment components.
+  - SET format to the result of ESM_FILE_FORMAT(resolved).
+ELSE,
   - Set format the module format of the content type associated with the URL resolved.
-9. Load resolved as module format, format.
+LOAD resolved as module format, format.
