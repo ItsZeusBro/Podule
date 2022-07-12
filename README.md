@@ -11,3 +11,5 @@ Package.json files describe file trees as described by the Node docs. It's usefu
   - Files with a .js extension when the nearest parent package.json file contains a top-level "type" field with a value of "module".
 
   - Strings passed in as an argument to --eval, or piped to node via STDIN, with the flag --input-type=module
+### CommonJS modules is the default mode:
+- When you are not using any ECMA script features, the package is looked at from a Common JS perspective (using Common JS rules). This suggests that CommonJS is the default, and ECMA modules are an exception to the general rule. 
