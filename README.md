@@ -1,6 +1,6 @@
 # Podule
 
-A place for my Node Module and Package Management scripts and notes
+A place for my Node Module and Package Management scripts and notes (these notes will become less important overtime, and will be replaced with use case design for the scripts)
 
 ## Packages
 
@@ -24,3 +24,6 @@ Package.json files describe file trees as described by the Node docs. It's usefu
   - Files with a .cjs extension.
   - Files with a .js extension when the nearest parent package.json file contains a top-level field "type" with a value of "commonjs".
   - Strings passed in as an argument to --eval or --print, or piped to node via STDIN, with the flag --input-type=commonjs.
+
+From the documentation:
+- Package authors should include the "type" field, even in packages where all sources are CommonJS. Being explicit about the type of the package will future-proof the package in case the default type of Node.js ever changes, and it will also make things easier for build tools and loaders to determine how the files in the package should be interpreted.
