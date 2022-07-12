@@ -10,7 +10,7 @@ Package.json files describe file trees as described by the Node docs. It's usefu
 1. ECMA Script ESM_RESOLVE(specifier, parentURL)
 2. Require()
 
-### Require Pseudocode
+### Common JS Require Pseudocode
 require(X) from module at path Y
 - IF X is a core module,
   -  return the core module
