@@ -28,5 +28,21 @@ Package.json files describe file trees as described by the Node docs. It's usefu
 From the documentation:
 - Package authors should include the "type" field, even in packages where all sources are CommonJS. Being explicit about the type of the package will future-proof the package in case the default type of Node.js ever changes, and it will also make things easier for build tools and loaders to determine how the files in the package should be interpreted.
 
-### Module Loaders:
-Just in time compilation does not seem to have a static executable file. It looks like it exists in RAM during runtime only and is cleaned up before returning from the program. This means the loader acts like a realtime linker that links modules as needed.
+## Module Loaders:
+Just in time compilation does not seem to have a static executable file. It looks like it exists in RAM during runtime only and is cleaned up before returning from the program. This means the loader acts like a realtime linker that links modules as needed. With that being said, there are two loaders for the two different Module support types:
+
+### CommonJS Loaders
+Top level is from the docs. My annotations underneath are not required to be accurate here (for now):
+- It is fully synchronous.
+  - Modules and sub components are loaded syncronously as they are called upon. This means one can predict which modules will be loaded first.
+- It is responsible for handling require() calls.
+- It is monkey patchable.
+- It supports folders as modules.
+- When resolving a specifier, if no exact match is found, it will try to add extensions (.js, .json, and finally .node) and then attempt to resolve folders as modules.
+- It treats .json as JSON text files.
+- .node files are interpreted as compiled addon modules loaded with process.dlopen().
+- It treats all files that lack .json or .node extensions as JavaScript text files.
+- It cannot be used to load ECMAScript modules (although it is possible to load ECMASCript modules from CommonJS modules). When used to load a JavaScript text file that is not an ECMAScript module, it loads it as a CommonJS module.
+
+
+### ECMA Script Loaders
