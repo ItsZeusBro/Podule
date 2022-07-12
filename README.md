@@ -8,7 +8,7 @@ Package.json files describe file trees as described by the Node docs. It's usefu
 
 ### In NodeJS there are two types of Module Specifier Resolution Algorithms:
 1. ECMA Script ESM_RESOLVE(specifier, parentURL)
-2. Require()
+2. Common JS Require()
 
 ### Common JS Require Pseudocode
 require(X) from module at path Y
