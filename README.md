@@ -36,6 +36,7 @@ Top level is from the docs. My annotations underneath are not required to be acc
 - It is fully synchronous.
   - Modules and sub components are loaded syncronously as they are called upon. This means one can predict which modules will be loaded first.
 - It is responsible for handling require() calls.
+  - I'm not sure if this means we can have CommonJS loaders in the same package as ECMA Script Loaders. If CommonJS modules are "responsible for handling" require(), then does that mean that you can have require() and import syntax loaded independently in the same file?
 - It is monkey patchable.
 - It supports folders as modules.
 - When resolving a specifier, if no exact match is found, it will try to add extensions (.js, .json, and finally .node) and then attempt to resolve folders as modules.
