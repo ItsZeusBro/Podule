@@ -12,37 +12,37 @@ Package.json files describe file trees as described by the Node docs. It's usefu
 
 ### Require Pseudocode
 require(X) from module at path Y
-1. If X is a core module,
+- IF X is a core module,
   -  return the core module
   -  STOP
-2. If X begins with '/'
+- IF X begins with '/'
    - set Y to be the filesystem root
-3. If X begins with './' or '/' or '../'
+- IF X begins with './' or '/' or '../'
    - LOAD_AS_FILE(Y + X)
    - LOAD_AS_DIRECTORY(Y + X)
    - THROW "not found"
-4. If X begins with '#'
+- IF X begins with '#'
    - LOAD_PACKAGE_IMPORTS(X, dirname(Y))
-5. LOAD_PACKAGE_SELF(X, dirname(Y))
-6. LOAD_NODE_MODULES(X, dirname(Y))
-7. THROW "not found"
+- LOAD_PACKAGE_SELF(X, dirname(Y))
+- LOAD_NODE_MODULES(X, dirname(Y))
+- THROW "not found"
 
 ### ECMA_RESOLVE Pseudocode
-LET resolved be undefined.
+- LET resolved be undefined.
 
-IF specifier is a valid URL, then
+- IF specifier is a valid URL, then
   - Set resolved to the result of parsing and reserializing specifier as a URL.
-ELSE IF specifier starts with "/", "./", or "../", then
+- ELSE IF specifier starts with "/", "./", or "../", then
   - Set resolved to the URL resolution of specifier relative to parentURL.
-ELSE IF specifier starts with "#", then
+- ELSE IF specifier starts with "#", then
   - Set resolved to the result of PACKAGE_IMPORTS_RESOLVE(specifier, parentURL, defaultConditions).
-ELSE,
+- ELSE,
   - Note: specifier is now a bare specifier.
   - Set resolved the result of PACKAGE_RESOLVE(specifier, parentURL).
   
-LET format be undefined.
+- LET format be undefined.
 
-IF resolved is a "file:" URL, then
+- IF resolved is a "file:" URL, then
   - IF resolved contains any percent encodings of "/" or "\" ("%2F" and "%5C" respectively), then
     - Throw an Invalid Module Specifier error.
   - IF the file at resolved is a directory, then
@@ -51,6 +51,6 @@ IF resolved is a "file:" URL, then
     - Throw a Module Not Found error.
   - SET resolved to the real path of resolved, maintaining the same URL querystring and fragment components.
   - SET format to the result of ESM_FILE_FORMAT(resolved).
-ELSE,
+- ELSE,
   - Set format the module format of the content type associated with the URL resolved.
 LOAD resolved as module format, format.
