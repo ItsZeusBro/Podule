@@ -84,12 +84,12 @@ In your source file where you wish to import the module, (as per the 'comet' exa
 
 Notice how the pacakge.json name "comet" is used, and remember how we used "npm link comet" from within our importing directory. That is the importance of the module name field in the package.json file. For whatever reason, the "main" field was not able to be infered by node for this example. I had to actually specify the module source file i wanted, but something tells me it should be inferred by the "main". Ohh well, this works fine.
 
-To undo these effects you can read the followin excerpt from this article here:
+### To undo these effects you can read the followin excerpt from this article here:
 https://medium.com/@alexishevia/the-magic-behind-npm-link-d94dcb3a81af
 
 
-    You can “undo” the effects of npm link by simply removing the symbolic links. But there is a built in command for it, aptly called: npm unlink.
+You can “undo” the effects of npm link by simply removing the symbolic links. But there is a built in command for it, aptly called: npm unlink.
 
-    Just run npm unlink --no-save <module_name> on your project’s directory to remove the local symlink, and run npm unlink on the module’s directory to remove the global symlink.
+Just run npm unlink --no-save <module_name> on your project’s directory to remove the local symlink, and run npm unlink on the module’s directory to remove the global symlink.
 
 
