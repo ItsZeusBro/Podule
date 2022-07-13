@@ -54,3 +54,21 @@ require(X) from module at path Y
 - ELSE,
   - Set format the module format of the content type associated with the URL resolved.
 LOAD resolved as module format, format.
+
+
+## Local Module Resolution
+If you have a local ECMA module somewhere on your system you can export it by making sure your package.json main field points to your export file and your name field represents your module name. Also make sure to specify that it is of type module
+
+Something like this:
+
+    "name": "comet",
+    "main": "Comet.js",
+    "type": "module:
+    
+If you want to import this ECMA module into another ECMA script you have to create a global symlink with the global node_modules folder. You can use npm link inside your exported module directory to create a systemwide symlink from the global node_modules folder to your projects path. 
+Then you have to go to your importing project root directory and run "npm link moduleName" to tell node that you wish to use the symlinked module inside your importing project. 
+
+In your source file where you wish to import the module, (as per the 'comet' example) use:
+    import {Comet} from "comet/Comet.js";
+
+Notice how the pacakge.json name "comet" is used, and remember how we used "npm link comet" from within our importing directory. That is the importance of the module name field in the package.json file. For whatever reason, the "main" field was not able to be infered by node for this example. I had to actually specify the module source file i wanted, but something tells me it should be inferred by the "main". Ohh well, this works fine.
